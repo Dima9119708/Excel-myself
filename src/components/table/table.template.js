@@ -9,7 +9,6 @@ function createLetters(_, index) {
   }
 }
 
-
 function createColumn(letter, id) {
 
   return `
@@ -31,11 +30,14 @@ function createCell(col) {
 
 function toRow(elements, id) {
   const ids = id ? id : ''
+  const rowResize = id ? '<div class="row-resize" data-resize="col"></div>' : ''
 
   return `
     <div class="row">
 
-      <div class="row-info">${ids}</div>
+      <div class="row-info">${ids}
+        ${rowResize}
+      </div>
 
       <div class="row-data">
           ${elements}
