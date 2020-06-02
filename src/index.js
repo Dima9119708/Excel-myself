@@ -1,10 +1,14 @@
 import './scss/index.scss'
 import '@babel/polyfill'
-import {Router} from './core/routes/Router'
-import {DashboardPage} from './pages/DashboardPage'
-import {ExcelPage} from './pages/ExcelPage'
+import { Excel } from './components/excel/Excel'
+import { Header } from './components/header/Header'
+import { ToolBar } from './components/toolbar/Toolbar'
+import { Formula } from './components/formula/Formula'
+import { Table } from './components/table/Table'
 
-new Router('#app', {
-  dashboard : DashboardPage,
-  excel : ExcelPage
-})
+
+const excel = new Excel('#app', 
+  [Header,ToolBar,Formula,Table]
+)
+
+excel.render()
