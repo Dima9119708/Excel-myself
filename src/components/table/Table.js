@@ -5,7 +5,7 @@ export class Table extends ExcelComponent {
   static parentClassName = 'excel__table'
 
   constructor($root) {
-    super ($root)
+    super ($root) 
   }
 
   toHTML() {
