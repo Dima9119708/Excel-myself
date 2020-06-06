@@ -1,3 +1,6 @@
+import { stylesDefault } from "../../core/stylesDefault"
+import { camelCaseToDash } from "./table.functions"
+
 const CODES = {
   a : 'A'.charCodeAt(),
   z : 'Z'.charCodeAt()
@@ -9,33 +12,41 @@ function createLetters(_, index) {
   }
 }
 
-function createColumn(letter, id) {
+function createColumn(lenght) {
 
-  return `
-    <div class="column" data-id="${id}" data-column>
+  return (letter, id) => {
+    return `
+    <div class="column unselectable" data-id="${id}" data-resizer  data-column>
       ${letter}
       <div class="col-resize" data-resize="col"></div>
     </div>
   `
+  }
+
 }
 
 function createCell(col) {
 
   return function(_,row) {
+    const styles = camelCaseToDash(JSON.stringify(stylesDefault))
     return `
-      <div class="cell" contenteditable data-id="${col}:${row}"></div>
+      <div class="cell" data-cell="cell"  
+      data-idCell="${row}" 
+      data-id="${col}:${row}"
+      style='${styles}' >
+      </div>
     `
   }
 }
 
 function toRow(elements, id) {
   const ids = id ? id : ''
-  const rowResize = id ? '<div class="row-resize" data-resize="col"></div>' : ''
+  const rowResize = id ? '<div class="row-resize" data-resize="row"></div>' : ''
 
   return `
-    <div class="row">
+    <div class="row" data-resizer>
 
-      <div class="row-info">${ids}
+      <div class="row-info unselectable">${ids}
         ${rowResize}
       </div>
 
@@ -54,7 +65,7 @@ export function createTable(rowCount = 20) {
   const column = new Array(result) 
                 .fill('')
                 .map(createLetters)
-                .map(createColumn)
+                .map(createColumn(result))
                 .join('')
 
   rows.push(toRow(column))
@@ -69,3 +80,4 @@ export function createTable(rowCount = 20) {
 
   return rows.join('')
 }
+
