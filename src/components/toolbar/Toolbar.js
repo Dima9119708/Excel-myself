@@ -1,40 +1,54 @@
 import { ExcelComponent } from "../../core/ExcelComponent";
+import { toolbarButtons } from "./toolbar.template";
+import { $ } from '../../core/Dom'
+import { stylesDefault } from "../../core/stylesDefault";
+import { toolbarHTML } from "./toolbar.functions";
 
 export class ToolBar extends ExcelComponent {
 
   static parentClassName = 'excel__toolbar'
 
-  constructor($root) {
+  constructor($root, options) {
     super ($root, {
-      listener : ['click']
+      listener : ['click'],
+      ...options
+    })
+
+    this.$root = $root
+    this.$stylesCell = {...stylesDefault}
+  }
+
+  get toHTMLButtons() {
+    return toolbarButtons(this.$stylesCell)
+  }
+
+  init() {
+    super.init() 
+
+    this.$subscriber('Current:Styles', changeStyles => {
+      this.$stylesCell = {...changeStyles}
+      this.changeToolbarHTML
     })
   }
 
   toHTML() {
-    return `
-        <div class="button">
-          <i class="material-icons">format_align_left</i>
-        </div>
+    return this.toHTMLButtons
+  }
 
-        <div class="button">
-          <i class="material-icons">format_align_center</i>
-        </div>
+  get changeToolbarHTML() {
+    toolbarHTML($(this.$root), this.$stylesCell)
+  }
 
-        <div class="button">
-          <i class="material-icons">format_align_right</i>
-        </div>
+  onClick(event) {
+    const $target = $(event.target).closest('[data-toolbarbutton]')
 
-        <div class="button">
-          <i class="material-icons">format_bold</i>
-        </div>
+    if ($target) {
 
-        <div class="button">
-          <i class="material-icons">format_italic</i>
-        </div>
+      const $targetArr = JSON.parse($($target).getAttribute('toolbarbutton'))
+      this.$stylesCell = {...this.$stylesCell, ...$targetArr}
 
-        <div class="button">
-          <i class="material-icons">format_underlined</i>
-        </div>
-    `
+      this.changeToolbarHTML
+      this.$emit('ToolBar:Styles', this.$stylesCell)
+    }
   }
 }
