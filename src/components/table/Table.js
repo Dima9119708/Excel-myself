@@ -2,8 +2,9 @@ import { ExcelComponent } from "../../core/ExcelComponent";
 import { createTable } from "./table.template";
 import { $ } from '../../core/Dom'
 import { TableSelected } from "./TableSelected";
-import { selectedGroup, tableResize, tableGetElementID, styleChange } from "./table.functions";
+import { selectedGroup, tableResizeEvent, tableGetElementID, styleChange } from "./table.functions";
 import { stylesDefault } from "../../core/stylesDefault";
+import * as actions from '../../redux/actions'
 
 export class Table extends ExcelComponent {
 
@@ -27,23 +28,31 @@ export class Table extends ExcelComponent {
     this.selection.$currentCell = $(this.$root.querySelector('[data-id="0:0"]'))
     this.selection.$currentCell.addClass('selected')
 
+    this.$dispatch(actions.tableCurrentText({
+      text : this.selection.$currentCell.toHTML(),
+    }))
+
+    this.emmiterCurrentStyles()
+
     this.onKeydownInit()
 
-    this.$subscriber('Formula:Text', data => {
-      this.selection.$currentCell.toHTML(data)
+    this.$subscriber('FORLUMA:INPUT', data => {
+      this.selection.$currentCell.toHTML(data.toHTML())
+      this.dispatchTEXT(this.selection.$currentCell)
     })
 
-    this.$subscriber('Formula:Enter', data => {
+    this.$subscriber('FORMULA:ENTER', data => {
       this.selection.contentEditableCell(this.selection.$currentCell)
     })
 
-    this.$subscriber('ToolBar:Styles', data => {
-      this.selection.applyStyles(data)
+    this.$subscriber('TOOLBAR:STYLES', styles => {
+      const cellStyles = this.selection.applyStyles(styles)
+      this.$dispatch(actions.toolbarStyles(cellStyles, styles))
     })
   }
 
   toHTML() {
-    return createTable(this.rowСounter)
+    return createTable(this.rowСounter, this.store.getState())
   }
 
   onDblclick(event) {
@@ -52,6 +61,16 @@ export class Table extends ExcelComponent {
     if (target) {
       this.selection.contentEditableCell($(event.target))
     }
+  }
+
+  selected($cell) {
+    this.selection.$currentCell.removeClass('selected')
+    this.selection.oneSelected($cell)
+  }
+
+  async tableResize(event,$targetResize) {
+    const data = await tableResizeEvent(event, this.$root, $targetResize)
+    this.$dispatch(actions.tableResize(data))
   }
 
   onMousedown(event) {
@@ -70,18 +89,19 @@ export class Table extends ExcelComponent {
         )
       } 
       else {
-        this.selection.$currentCell.removeClass('selected')
-        this.selection.oneSelected($(event.target))
 
-        this.$emit('Selected:click', this.selection.$currentCell.toHTML())
+        this.selected($(event.target))
+
+        this.$dispatch(actions.tableCurrentText({
+          text : $(event.target).toHTML(),
+        }))
+
         this.onKeydownInit()
+        this.emmiterCurrentStyles()
 
-        this.$emit('Current:Styles', styleChange(
-                                            stylesDefault, 
-                                            this.selection.$currentCell))  
       }
     } else if ($targetResize) {
-      tableResize($(event.target), this.$root, $targetResize)
+      this.tableResize($(event.target),$targetResize)
     }
   }
 
@@ -112,16 +132,34 @@ export class Table extends ExcelComponent {
                               `)
         if ($getCell) {
           this.selection.$currentCell.blur()
-          this.selection.$currentCell.removeClass('selected')
-  
-          this.selection.oneSelected($($getCell))
-          this.$emit('Selected:Keyboard', $($getCell).toHTML())
+          this.selected($($getCell))
+          this.$emit('SELECTED:KEYBOARD', $($getCell).toHTML())
+          this.emmiterCurrentStyles()
         }
       }
     }
   }
 
+  emmiterCurrentStyles() {
+    this.$emit('CURRENT:STYLES', styleChange(
+                stylesDefault, 
+                this.selection.$currentCell))  
+  }
+
+  dispatchTEXT(target) {
+    const id = target.getAttribute('id')
+    const text = target.toHTML()
+    
+    this.$dispatch(actions.tableCellText({
+      [id] : text,
+    }))
+
+    this.$dispatch(actions.tableCurrentText({
+      text : text,
+    }))
+  }
+
   onInput(event) {
-    this.$emit('Selected:Text', $(event.target).toHTML())
+    this.dispatchTEXT($(event.target))
   }
 }

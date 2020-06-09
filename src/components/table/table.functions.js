@@ -25,86 +25,98 @@ function groupSelected(start, finish) {
              .map( (_, i) => start + i)
 }
 
-export function tableResize($target, $root, $targetResize){
+export function tableResizeEvent($target, $root, $targetResize){
+  return new Promise(resolve => {
+    const type = $targetResize
+
+    const $parent = $($target).closest('[data-resizer]')
+    const $resizeLine = $($parent.querySelector('[data-resize]')) 
+    const $parentId = $($parent).getAttribute('id')
+    const $parentCoord = $($parent).coordinates()
+    const $parentWidth = $parent.offsetWidth
+    const $parentHeight = $parent.offsetHeight
+    let delta
+    let value
+
   
-  const type = $targetResize
-
-  const $parent = $($target).closest('[data-resizer]')
-  const $resizeLine = $($parent.querySelector('[data-resize]')) 
-  const $parentId = $($parent).getAttribute('id')
-  const $parentCoord = $($parent).coordinates()
-  const $parentWidth = $parent.offsetWidth
-  const $parentHeight = $parent.offsetHeight
-  let delta
-  let value
-
-  if (type === 'col') {
-    $resizeLine.css({
-      height : 5000 + 'px',
-      opacity : 1
-    })
-  }
-  else if (type === 'row') {
-    $resizeLine.css({
-      width : 5000 + 'px',
-      opacity : 1
-    })
-  }
-
-  $root.onmousemove = e => {
-
-    if ( type === 'col' ) {
-      delta = e.pageX - $parentCoord.right
-      value = ($parentWidth + delta) + 'px'
+    if (type === 'col') {
       $resizeLine.css({
-        left : value
+        height : 5000 + 'px',
+        opacity : 1
       })
     }
     else if (type === 'row') {
-      delta = e.y - $parentCoord.bottom
-      value = $parentHeight + delta
       $resizeLine.css({
-        top : value + 'px'
+        width : 5000 + 'px',
+        opacity : 1
       })
     }
-  }
-
-  $root.onmouseup = e => {
-    $root.onmousemove = null
-    $root.onmouseup = null
-
-    if ( type === 'col' ) {
-      $($parent).css({
-        width : value
-      })
-
-      $root.querySelectorAll(`[data-idCell="${$parentId}"]`)
-          .forEach(cell => {
-              $(cell).css({
-                width : value
-              })
-          });
-
-      $resizeLine.css({
-        left : 'unset',
-        right : 0,
-        opacity : 0,
-        height : 100 + '%',
-      })
+  
+    $root.onmousemove = e => {
+  
+      if ( type === 'col' ) {
+        delta = e.pageX - $parentCoord.right
+        value = ($parentWidth + delta) + 'px'
+        $resizeLine.css({
+          left : value
+        })
+      }
+      else if (type === 'row') {
+        delta = e.y - $parentCoord.bottom
+        value = ($parentHeight + delta) + 'px'
+        $resizeLine.css({
+          top : value
+        })
+      }
     }
-    else if (type === 'row') {
+  
+    $root.onmouseup = e => {
+      $root.onmousemove = null
+      $root.onmouseup = null
+  
+      if ( type === 'col' ) {
+        $($parent).css({
+          width : value
+        })
+  
+        $root.querySelectorAll(`[data-idCell="${$parentId}"]`)
+            .forEach(cell => {
+                $(cell).css({
+                  width : value
+                })
+            });
+  
+        $resizeLine.css({
+          left : 'unset',
+          right : 0,
+          opacity : 0,
+          height : 100 + '%',
+        })
 
-      $resizeLine.css({
-        width : 100 + '%',
-        opacity : 0,
-        top : 'unset'
-      })
+        resolve({
+          id : $parentId,
+          col : value
+        })
+      }
+      else if (type === 'row') {
+  
+        $resizeLine.css({
+          width : 100 + '%',
+          opacity : 0,
+          top : 'unset'
+        })
+  
+        $($parent).css({
+          height : value
+        })
 
-      $($parent).css({
-        height : value + 'px'
-      })
+        resolve({
+          id : $parentId,
+          row : value
+        })
+      }
     }
-  }
+  })
 }
 
 export function tableGetElementID( key, col, row, rowСounter ) {
@@ -135,10 +147,9 @@ export function tableGetElementID( key, col, row, rowСounter ) {
   return `[data-id="${row}:${col}"]`
 }
 
-export function camelCaseToDash( myStr ) {
+export function camelCaseToDash( objStyles ) {
 
   const arrStyles = []
-  const objStyles = JSON.parse(myStr)
   
   Object.keys(objStyles).forEach(style => {
     let str = `${style}:${objStyles[style]}`

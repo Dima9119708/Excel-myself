@@ -25,7 +25,7 @@ export class ToolBar extends ExcelComponent {
   init() {
     super.init() 
 
-    this.$subscriber('Current:Styles', changeStyles => {
+    this.$subscriber('CURRENT:STYLES', changeStyles => {
       this.$stylesCell = {...changeStyles}
       this.changeToolbarHTML
     })
@@ -48,7 +48,7 @@ export class ToolBar extends ExcelComponent {
       this.$stylesCell = {...this.$stylesCell, ...$targetArr}
 
       this.changeToolbarHTML
-      this.$emit('ToolBar:Styles', this.$stylesCell)
+      this.$emit('TOOLBAR:STYLES', this.$stylesCell)
     }
   }
 }

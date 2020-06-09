@@ -6,7 +6,7 @@ export class Dom {
   }
 
   toHTML(html) {
-    if (html || html == '') {
+    if (html || html === '') {
       return this.$element.innerHTML = html
     }
 

@@ -1,4 +1,5 @@
 import { Dom } from "../../core/Dom"
+import * as actions from '../../redux/actions'
 
 export class TableSelected {
   constructor() {
@@ -32,8 +33,11 @@ export class TableSelected {
   applyStyles(styles) {
     if(!this.$group.length) {
       this.$currentCell.css(styles)
+      return [this.$currentCell]
     }
     this.$group.forEach($cell => $cell.css(styles))
+
+    return this.$group
   }
 
   clear() {

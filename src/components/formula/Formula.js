@@ -7,29 +7,30 @@ export class Formula extends ExcelComponent {
 
   constructor($root, options) {
     super ($root, {
+      subscribers : ['currentText'],
       listener : ['input', 'keydown'],
       ...options
     })
 
     this.$root = $root
+    this.$formulaInput = null
   }
 
   init(){
     super.init()
 
-    const $formulaInput = $(this.$root).querySelector('[data-formulaInput]')
+    const {currentText} = this.store.getState()
 
-    this.$subscriber('Selected:Text', data => {
-      $($formulaInput).toHTML(data)
-    })
+    this.$formulaInput = $(this.$root).querySelector('[data-formulaInput]')
+    $(this.$formulaInput).toHTML(currentText)
 
-    this.$subscriber('Selected:click', data => {
-      $($formulaInput).toHTML(data)
+    this.$subscriber('SELECTED:KEYBOARD', data => {
+      $(this.$formulaInput).toHTML(data)
     })
+  }
 
-    this.$subscriber('Selected:Keyboard', data => {
-      $($formulaInput).toHTML(data)
-    })
+  storeChange(change) {
+    $(this.$formulaInput).toHTML(change.currentText)
   }
 
   toHTML() {
@@ -40,7 +41,7 @@ export class Formula extends ExcelComponent {
   }
 
   onInput(event) {
-    this.$emit('Formula:Text', $(event.target).toHTML())
+    this.$emit('FORLUMA:INPUT', $(event.target))
   }
 
   onKeydown(event) {
@@ -49,8 +50,7 @@ export class Formula extends ExcelComponent {
 
     if (key === 'Enter') {
       event.preventDefault()
-      this.$emit('Formula:Enter', 'enter')
+      this.$emit('FORMULA:ENTER', 'enter')
     }
-    
   }
 }
