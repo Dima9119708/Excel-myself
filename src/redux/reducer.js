@@ -30,14 +30,7 @@ export function reducer(state, actions) {
       ...state,
       dataText : prev
     }
-
-    case TABLE_CURRENT_TEXT :
-
-    return {
-      ...state,
-      currentText : actions.data.text.trim()
-    }
-
+    
     case TOOLBAR_STYLES:
       const dataStyles = state['dataStyles'] || {}
 
