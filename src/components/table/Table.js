@@ -134,7 +134,7 @@ export class Table extends ExcelComponent {
           this.selection.$currentCell.blur()
           this.selected($($getCell))
           this.$emit('TABLE:SELECT-TEXT', $($getCell))
-          this.emmiterCurrentStyles()
+          this.emmiterCurrentStyles() 
         }
       }
     }
