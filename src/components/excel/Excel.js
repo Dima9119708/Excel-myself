@@ -21,7 +21,7 @@ export class Excel {
       this.store.subscribe(state => {
         setTimeout(() => {
           storage('excel-table', state)
-        }, 500)
+        }, 500) 
       })
 
 
