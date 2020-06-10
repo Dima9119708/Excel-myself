@@ -20,13 +20,6 @@ export function tableCellText(data) {
   }
 }
 
-export function tableCurrentText(data) {
-  return {
-    type : TABLE_CURRENT_TEXT,
-    data
-  }
-}
-
 export function toolbarStyles(groupCell, styles) {
 
   return {
