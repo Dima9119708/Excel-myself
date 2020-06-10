@@ -1,5 +1,6 @@
 import { stylesDefault } from "../../core/stylesDefault"
 import { camelCaseToDash } from "./table.functions"
+import { parse } from "../../core/utils"
 
 const CODES = {
   a : 'A'.charCodeAt(),
@@ -45,8 +46,9 @@ function createCell(col, {colState,dataText,dataStyles}) {
       <div class="cell" data-cell="cell"  
       data-idCell="${idCell}" 
       data-id="${id}"
+      data-parse="${text}"
       style='width:${width};${styles}' >
-        ${text}
+        ${parse(text)}
       </div>
     `
   }

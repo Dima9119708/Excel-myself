@@ -37,6 +37,14 @@ export class Dom {
     this.$element.classList.add(className)
   }
 
+  attr(name, value) {
+    if (value) {
+      this.$element.setAttribute(name, value);
+    }
+
+    return this.$element.dataset[name]
+  }
+
   removeClass(className) {
     this.$element.classList.remove(className)
   }

@@ -2,7 +2,7 @@ import { $ } from "../../core/Dom"
 import { Emitter } from "../../core/Emitter"
 import { Store } from "../../redux/Store"
 import { reducer } from "../../redux/reducer"
-import { storage } from "../../core/utils"
+import { storage, debounce } from "../../core/utils"
 import { initialState } from "../../core/initialState"
 import { StoreSub } from "../../core/StoreSubscriber"
 
@@ -18,9 +18,12 @@ export class Excel {
   getRoot() {
     const excel = $.create('div', 'excel')
 
-    this.store.subscribe(state => {
-      storage('excel-table', state)
-    })
+      this.store.subscribe(state => {
+        setTimeout(() => {
+          storage('excel-table', state)
+        }, 500)
+      })
+
 
     const options = {
       emmiter : this.emmiter,

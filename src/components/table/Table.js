@@ -5,6 +5,7 @@ import { TableSelected } from "./TableSelected";
 import { selectedGroup, tableResizeEvent, tableGetElementID, styleChange } from "./table.functions";
 import { stylesDefault } from "../../core/stylesDefault";
 import * as actions from '../../redux/actions'
+import { parse, startsWithString } from "../../core/utils";
 
 export class Table extends ExcelComponent {
 
@@ -28,9 +29,7 @@ export class Table extends ExcelComponent {
     this.selection.$currentCell = $(this.$root.querySelector('[data-id="0:0"]'))
     this.selection.$currentCell.addClass('selected')
 
-    this.$dispatch(actions.tableCurrentText({
-      text : this.selection.$currentCell.toHTML(),
-    }))
+    this.$emit('TABLE:SELECT-TEXT', this.selection.$currentCell)
 
     this.emmiterCurrentStyles()
 
@@ -39,6 +38,9 @@ export class Table extends ExcelComponent {
     this.$subscriber('FORLUMA:INPUT', data => {
       this.selection.$currentCell.toHTML(data.toHTML())
       this.dispatchTEXT(this.selection.$currentCell)
+
+      this.selection.$currentCell.attr('data-parse', startsWithString(data.toHTML()))
+      this.selection.$currentCell.toHTML(parse(data.toHTML()))
     })
 
     this.$subscriber('FORMULA:ENTER', data => {
@@ -92,9 +94,7 @@ export class Table extends ExcelComponent {
 
         this.selected($(event.target))
 
-        this.$dispatch(actions.tableCurrentText({
-          text : $(event.target).toHTML(),
-        }))
+        this.$emit('TABLE:SELECT-TEXT', $(event.target))
 
         this.onKeydownInit()
         this.emmiterCurrentStyles()
@@ -133,7 +133,7 @@ export class Table extends ExcelComponent {
         if ($getCell) {
           this.selection.$currentCell.blur()
           this.selected($($getCell))
-          this.$emit('SELECTED:KEYBOARD', $($getCell).toHTML())
+          this.$emit('TABLE:SELECT-TEXT', $($getCell))
           this.emmiterCurrentStyles()
         }
       }
@@ -147,19 +147,16 @@ export class Table extends ExcelComponent {
   }
 
   dispatchTEXT(target) {
-    const id = target.getAttribute('id')
+    const id = target.attr('id')
     const text = target.toHTML()
     
     this.$dispatch(actions.tableCellText({
       [id] : text,
     }))
-
-    this.$dispatch(actions.tableCurrentText({
-      text : text,
-    }))
   }
 
   onInput(event) {
     this.dispatchTEXT($(event.target))
+    this.$emit('TABLE:SELECT-TEXT', $(event.target))
   }
 }

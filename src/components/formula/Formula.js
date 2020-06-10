@@ -7,7 +7,6 @@ export class Formula extends ExcelComponent {
 
   constructor($root, options) {
     super ($root, {
-      subscribers : ['currentText'],
       listener : ['input', 'keydown'],
       ...options
     })
@@ -19,18 +18,23 @@ export class Formula extends ExcelComponent {
   init(){
     super.init()
 
-    const {currentText} = this.store.getState()
-
     this.$formulaInput = $(this.$root).querySelector('[data-formulaInput]')
-    $(this.$formulaInput).toHTML(currentText)
 
-    this.$subscriber('SELECTED:KEYBOARD', data => {
-      $(this.$formulaInput).toHTML(data)
+    this.$subscriber('TABLE:SELECT-TEXT', data => {
+      let dataParse = data.attr('parse')
+
+      if (dataParse && dataParse.startsWith('=')) {
+
+        if (data.toHTML() === '') {
+          dataParse = ''
+        }
+
+        $(this.$formulaInput).toHTML(dataParse)
+      }
+      else {
+        $(this.$formulaInput).toHTML(data.toHTML())
+      }
     })
-  }
-
-  storeChange(change) {
-    $(this.$formulaInput).toHTML(change.currentText)
   }
 
   toHTML() {
