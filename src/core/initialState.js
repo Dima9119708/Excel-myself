@@ -4,4 +4,5 @@ export const initialState = {
   dataText : {},
   dataStyles : {},
   headerTittle : 'Новая Таблица',
+  date : ''
 }

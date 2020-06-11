@@ -3,7 +3,8 @@ import {
   TABLE_CELL_TEXT, 
   TABLE_CURRENT_TEXT, 
   TOOLBAR_STYLES,
-  HEADER_TITTLE 
+  HEADER_TITTLE, 
+  DATE
 } from "./constants";
 
 export function reducer(state, actions) {
@@ -24,13 +25,22 @@ export function reducer(state, actions) {
 
     case TABLE_CELL_TEXT:
       prev = state.dataText || {}
-      prev[Object.keys(actions.data)] = Object.values(actions.data).join('')
+
+      const id = Object.keys(actions.data).join('')
+      const value = Object.values(actions.data).join('')
+
+      if (value === '') {
+        delete prev[id]
+      }
+      else {
+        prev[id] = value
+      }
 
     return {
       ...state,
       dataText : prev
     }
-    
+
     case TOOLBAR_STYLES:
       const dataStyles = state['dataStyles'] || {}
 
@@ -49,6 +59,14 @@ export function reducer(state, actions) {
     return {
       ...state,
       headerTittle : actions.headerText
+    }
+
+    case DATE : 
+
+    return {
+      ...state,
+      date : `${new Date().toLocaleDateString()} 
+              ${new Date().toLocaleTimeString()}`
     }
   }
 

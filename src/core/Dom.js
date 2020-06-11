@@ -13,7 +13,7 @@ export class Dom {
     return this.$element.textContent
   }
 
-  insertAdjacentHTML(position, string){
+  insertHTML(position, string){
     this.$element.insertAdjacentHTML(position, string)
   }
 

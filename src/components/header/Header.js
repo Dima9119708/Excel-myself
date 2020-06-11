@@ -1,5 +1,6 @@
 import { ExcelComponent } from "../../core/ExcelComponent";
 import * as actions from '../../redux/actions'
+import {ActiveRout} from '../../core/routing/ActiveRout'
 
 export class Header extends ExcelComponent {
 
@@ -28,12 +29,12 @@ export class Header extends ExcelComponent {
 
         <div>
 
-          <div class="button">
-            <i class="material-icons">delete</i>
+          <div class="button" data-delete="delete">
+            <i class="material-icons" data-delete="delete">delete</i>
           </div>
 
-          <div class="button">
-            <i class="material-icons">exit_to_app</i>
+          <div class="button" data-exit="exit">
+            <i class="material-icons" data-exit="exit">exit_to_app</i>
           </div>
 
         </div>
@@ -45,6 +46,19 @@ export class Header extends ExcelComponent {
   }
 
   onClick(event) {
+    if (event.target.dataset['exit']) {
+      ActiveRout.hash = ''
+      ActiveRout.reload
+    }
+    else if (event.target.dataset['delete']) {
 
+      const answer = confirm('Вы ходите удалить таблицу')
+
+      if (answer)  {
+        localStorage.removeItem(`#excel/${ActiveRout.param}`)
+        ActiveRout.hash = ''
+        ActiveRout.reload
+      }
+    }
   }
 }

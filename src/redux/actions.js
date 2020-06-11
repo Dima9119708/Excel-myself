@@ -3,7 +3,8 @@ import {
   TABLE_CELL_TEXT,
   TABLE_CURRENT_TEXT,
   TOOLBAR_STYLES,
-  HEADER_TITTLE 
+  HEADER_TITTLE, 
+  DATE
 } from "./constants";
 
 export function tableResize(data){
@@ -33,5 +34,11 @@ export function headerTittle(headerText) {
   return {
     type : HEADER_TITTLE,
     headerText
+  }
+}
+
+export function dateTable() {
+  return {
+    type : DATE,
   }
 }

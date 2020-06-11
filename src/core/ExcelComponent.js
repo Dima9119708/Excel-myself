@@ -1,4 +1,5 @@
 import { DomListener } from "./DomListener";
+import * as actions from '../redux/actions'
 
 export class ExcelComponent extends DomListener {
 
@@ -10,7 +11,6 @@ export class ExcelComponent extends DomListener {
     this.unsubscribers = []
     this.subscribers = options.subscribers || []
   }
-
 
   $emit(event, ...args) {
     this.emmiter.emit(event, ...args)

@@ -1,29 +1,19 @@
 import { $ } from "../../core/Dom"
 import { Emitter } from "../../core/Emitter"
-import { Store } from "../../redux/Store"
-import { reducer } from "../../redux/reducer"
-import { storage, debounce } from "../../core/utils"
-import { initialState } from "../../core/initialState"
 import { StoreSub } from "../../core/StoreSubscriber"
+import { dateTable } from '../../redux/actions'
+import { initialState } from "../../core/initialState"
 
 export class Excel {
-  constructor(selector, components = []) {
-    this.selector = $(selector)
+  constructor(components = [], store) {
     this.components = components
     this.emmiter = new Emitter()
-    this.store = new Store(reducer, storage('excel-table') || initialState)
+    this.store = store
     this.storeSubscriber = new StoreSub(this.store)
   }
 
   getRoot() {
     const excel = $.create('div', 'excel')
-
-      this.store.subscribe(state => {
-        setTimeout(() => {
-          storage('excel-table', state)
-        }, 500) 
-      })
-
 
     const options = {
       emmiter : this.emmiter,
@@ -33,18 +23,18 @@ export class Excel {
     this.components = this.components.map(Component => {
       const createComponent = $.create('div', Component.parentClassName)
       const component = new Component(createComponent, options)
-      $(createComponent).insertAdjacentHTML('beforeend',component.toHTML())
+      $(createComponent).insertHTML('beforeend',component.toHTML())
       excel.append(createComponent)
 
       return component
     })
 
-    this.selector.append(excel)
+    this.store.dispatch(dateTable())
+
+    return excel
   }
 
-  render() {
-    this.getRoot()
-
+  init() {
     this.storeSubscriber.subscribeComponents(this.components)
     this.components.forEach(component => component.init())
   }
