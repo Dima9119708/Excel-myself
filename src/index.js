@@ -1,14 +1,13 @@
 import './scss/index.scss'
 import '@babel/polyfill'
-import { Excel } from './components/excel/Excel'
-import { Header } from './components/header/Header'
-import { ToolBar } from './components/toolbar/Toolbar'
-import { Formula } from './components/formula/Formula'
-import { Table } from './components/table/Table'
+
+import { Router } from './core/routing/Router'
+import { Dashboard } from './pages/Dashboard'
+import { ExcelPage } from './pages/ExcelPage'
 
 
-const excel = new Excel('#app', 
-  [Header,ToolBar,Formula,Table]
-)
+const router = new Router('#app', {
+  dashboard : Dashboard,
+  excel : ExcelPage
+})
 
-excel.render()
