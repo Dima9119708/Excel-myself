@@ -1,6 +1,6 @@
-import { stylesDefault } from "../../core/stylesDefault"
+import { stylesDefault } from "../../core/init/stylesDefault"
 import { camelCaseToDash } from "./table.functions"
-import { parse } from "../../core/utils"
+import { parse } from "../../core/utils/utils"
 
 const CODES = {
   a : 'A'.charCodeAt(),
@@ -17,13 +17,13 @@ function createLetters(_, index) {
 }
 
 function createColumn({colState}) {
-  
+
   return (letter, id) => {
 
     return `
-    <div 
-       class="column unselectable" 
-       data-id="${id}" data-resizer  
+    <div
+       class="column unselectable"
+       data-id="${id}" data-resizer
        data-column
        style="width:${colState[id] || defaultWidth}"
        >
@@ -40,11 +40,11 @@ function createCell(col, {colState,dataText,dataStyles}) {
     const id = `${col}:${idCell}`
     const text = dataText[id] ? dataText[id] : ''
     const width = colState[idCell] || defaultWidth + 'px'
-    const styles = camelCaseToDash(dataStyles[id] || stylesDefault) 
+    const styles = camelCaseToDash(dataStyles[id] || stylesDefault)
 
     return `
-      <div class="cell" data-cell="cell"  
-      data-idCell="${idCell}" 
+      <div class="cell" data-cell="cell"
+      data-idCell="${idCell}"
       data-id="${id}"
       data-parse="${text}"
       style='width:${width};${styles}' >
@@ -61,9 +61,9 @@ function toRow(elements, id, state) {
   const rowState = state ? state.rowState : ''
 
   return `
-    <div 
-     class="row" 
-     data-id="${ids}" 
+    <div
+     class="row"
+     data-id="${ids}"
      data-resizer
      style="height:${rowState[id] || defaultHeight + 'px'};"
      >
@@ -84,7 +84,7 @@ export function createTable(rowCount = 20, state) {
   const rows = []
   const result = CODES.z - CODES.a + 1
 
-  const column = new Array(result) 
+  const column = new Array(result)
                 .fill('')
                 .map(createLetters)
                 .map(createColumn(state))
@@ -102,4 +102,3 @@ export function createTable(rowCount = 20, state) {
 
   return rows.join('')
 }
-

@@ -1,4 +1,4 @@
-import { isEqual } from "./utils"
+import { isEqual } from "./utils/utils"
 
 export class StoreSub {
   constructor(store) {
@@ -15,7 +15,7 @@ export class StoreSub {
       Object.keys(state).forEach(key => {
         if(!isEqual(this.prev[key], state[key])) {
           components.forEach(component => {
-      
+
             if(component.subscribers.includes(key)) {
               const change = {[key] : state[key]}
               component.storeChange(change)

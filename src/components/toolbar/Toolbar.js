@@ -1,7 +1,7 @@
 import { ExcelComponent } from "../../core/ExcelComponent";
 import { toolbarButtons } from "./toolbar.template";
 import { $ } from '../../core/Dom'
-import { stylesDefault } from "../../core/stylesDefault";
+import { stylesDefault } from "../../core/init/stylesDefault";
 import { toolbarHTML } from "./toolbar.functions";
 
 export class ToolBar extends ExcelComponent {
@@ -23,7 +23,7 @@ export class ToolBar extends ExcelComponent {
   }
 
   init() {
-    super.init() 
+    super.init()
 
     this.$subscriber('CURRENT:STYLES', changeStyles => {
       this.$stylesCell = {...changeStyles}

@@ -6,6 +6,7 @@
 @import "formula";
 @import "table";
 @import "dashboard";
+@import './preloader.scss';
 
 * {
   margin: 0;
@@ -25,5 +26,3 @@ body {
   max-width: 100%;
   font-size: .8rem;
 }
-
-
