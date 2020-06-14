@@ -7,7 +7,7 @@ export function storage(key,value) {
 }
 
 export function isEqual(a,b) {
-  
+
   if(typeof a === 'object' && typeof b === 'object') {
     return JSON.stringify(a) === JSON.stringify(b)
   }
@@ -39,6 +39,15 @@ export function startsWithString(value) {
   return ''
 }
 
-export function debounce(time,fn) {
+export function debounce(fn,wait) {
 
+  return (...args) => {
+    clearTimeout()
+
+    setTimeout(() => {
+      clearTimeout()
+      fn(...args)
+
+    }, wait)
+  }
 }

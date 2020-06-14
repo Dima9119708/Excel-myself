@@ -1,4 +1,4 @@
-import {storage} from '../core/utils'
+import {storage} from '../core/utils/utils'
 
 function createLi(key) {
 
@@ -12,7 +12,7 @@ function createLi(key) {
   `
 }
 
-function getKey() {
+export function getKey() {
   const key = []
   for(let i = 0; i < localStorage.length; i++) {
 
@@ -20,7 +20,7 @@ function getKey() {
       key.push(localStorage.key(i))
     }
   }
-  
+
   return key
 }
 
@@ -39,7 +39,7 @@ export function createRecords() {
         <span>Название</span>
         <span>Дата открытия</span>
     </div>
-  
+
     <ul class="db__list">
          ${keys.map(createLi).join('')}
     </ul>

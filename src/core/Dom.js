@@ -7,10 +7,15 @@ export class Dom {
 
   toHTML(html) {
     if (html || html === '') {
-      return this.$element.innerHTML = html
+      this.$element.innerHTML = html
     }
 
     return this.$element.textContent
+  }
+
+  clear() {
+    this.$element.innerHTML = ''
+    return this
   }
 
   insertHTML(position, string){
@@ -107,7 +112,7 @@ export function $(element) {
 $.create = (tagName, options) => {
   const createElem = document.createElement(tagName)
 
-  if (options) { 
+  if (options) {
     createElem.classList.add(options)
   }
 

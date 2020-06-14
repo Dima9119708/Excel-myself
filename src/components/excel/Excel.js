@@ -2,7 +2,7 @@ import { $ } from "../../core/Dom"
 import { Emitter } from "../../core/Emitter"
 import { StoreSub } from "../../core/StoreSubscriber"
 import { dateTable } from '../../redux/actions'
-import { initialState } from "../../core/initialState"
+import { initialState } from "../../core/init/initialState"
 
 export class Excel {
   constructor(components = [], store) {

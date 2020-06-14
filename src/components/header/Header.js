@@ -49,6 +49,7 @@ export class Header extends ExcelComponent {
     if (event.target.dataset['exit']) {
       ActiveRout.hash = ''
       ActiveRout.reload
+      localStorage.removeItem('Current')
     }
     else if (event.target.dataset['delete']) {
 
@@ -56,6 +57,7 @@ export class Header extends ExcelComponent {
 
       if (answer)  {
         localStorage.removeItem(`#excel/${ActiveRout.param}`)
+        localStorage.removeItem('Current')
         ActiveRout.hash = ''
         ActiveRout.reload
       }

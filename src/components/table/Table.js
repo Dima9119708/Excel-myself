@@ -3,9 +3,9 @@ import { createTable } from "./table.template";
 import { $ } from '../../core/Dom'
 import { TableSelected } from "./TableSelected";
 import { selectedGroup, tableResizeEvent, tableGetElementID, styleChange } from "./table.functions";
-import { stylesDefault } from "../../core/stylesDefault";
+import { stylesDefault } from "../../core/init/stylesDefault";
 import * as actions from '../../redux/actions'
-import { parse, startsWithString } from "../../core/utils";
+import { parse, startsWithString } from "../../core/utils/utils";
 
 export class Table extends ExcelComponent {
 
@@ -25,7 +25,7 @@ export class Table extends ExcelComponent {
 
   init() {
     super.init()
-    
+
     this.selection.$currentCell = $(this.$root.querySelector('[data-id="0:0"]'))
     this.selection.$currentCell.addClass('selected')
 
@@ -82,14 +82,14 @@ export class Table extends ExcelComponent {
     if ($targetCell) {
 
       if(event.shiftKey) {
-    
+
         this.selection.groupSelected (
           selectedGroup( $(event.target), this.selection.$currentCell)
             .map(elem => {
               return $(this.$root.querySelector(`[data-id="${elem}"]`))
             })
         )
-      } 
+      }
       else {
 
         this.selected($(event.target))
@@ -106,7 +106,7 @@ export class Table extends ExcelComponent {
   }
 
   onKeydownInit() {
-   
+
     const keyboards = [
       'ArrowRight',
       'ArrowUp',
@@ -118,7 +118,7 @@ export class Table extends ExcelComponent {
 
     document.onkeydown = event => {
       const { key } = event
-  
+
       if(keyboards.includes(key)) {
         event.preventDefault()
 
@@ -134,7 +134,7 @@ export class Table extends ExcelComponent {
           this.selection.$currentCell.blur()
           this.selected($($getCell))
           this.$emit('TABLE:SELECT-TEXT', $($getCell))
-          this.emmiterCurrentStyles() 
+          this.emmiterCurrentStyles()
         }
       }
     }
@@ -142,14 +142,14 @@ export class Table extends ExcelComponent {
 
   emmiterCurrentStyles() {
     this.$emit('CURRENT:STYLES', styleChange(
-                stylesDefault, 
-                this.selection.$currentCell))  
+                stylesDefault,
+                this.selection.$currentCell))
   }
 
   dispatchTEXT(target) {
     const id = target.attr('id')
     const text = target.toHTML()
-    
+
     this.$dispatch(actions.tableCellText({
       [id] : text,
     }))
